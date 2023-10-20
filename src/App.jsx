@@ -1,29 +1,27 @@
 import { useState } from "react";
 import { UseMultistepForm } from "./components/UseMultistepForm";
-import { UserForm } from "./components/UserForm";
 import { ThankYouForm } from "./components/ThankYouForm";
-import "../src/styles/App.css";
 import { useAddHiddenInputs } from "./scripts/Hidden";
-import { MoreInfo } from "./components/MoreInfo";
+import "./styles/App.css";
+import { CityView } from "./components/CityView";
+import { PhoneView } from "./components/PhoneView";
+import { EmailView } from "./components/EmailView";
+import { HomeTypeView } from "./components/HomeTypeView";
+import { HomeAreaView } from "./components/HomeAreaView"; 
+import { PlanView } from "./components/PlanView";
 
 const INITIAL_DATA = {
   dataLog: "",
   dataPhone: "",
-  dataEmailTemplate: "odbiorywarszawa.pl.php",
-  dataSMSTemplate: "odbiorywarszawa.pl.php",
-  dataTags: {
-    3: "1",
-    4: "1",
-  },
-  "dataValues[serviceDataType]": 394,
-  "dataValues[serviceClientSource]": 465,
+  dataEmailTemplate: "audytowo.com.php",
+  dataSMSTemplate: "audytowo.com.php",
+  "dataValues[serviceDataType]": 574,
   "dataValues[serviceClientChannel]": 39,
+  "dataValues[serviceClientSource]": 651,
   "dataValues[serviceDataAddressCityText]": "",
   "dataValues[serviceDataAddress]": "",
-  "dataValues[serviceDataCity]": 1,
-  "dataValues[serviceDataArea]": "",
-  "dataValues[serviceHomeType]": 390,
-  "dataValues[serviceDataServiceDate]": "",
+  "dataValues[serviceDataFlatArea]": "",
+  "dataValues[serviceClientClientHasFloorPlan]": "",
   dataUpdateEmail: "",
   docs: "",
   submit: 1,
@@ -51,11 +49,15 @@ export const App = () => {
     });
   }
 
-  const { isFirstStep, step, isSecondStep, isLastStep, next } =
+  const { isFirstStep, step, isLastStep, penultimateStep, next } =
     UseMultistepForm([
-      <UserForm {...data} updateFields={updateFields} />,
-      <MoreInfo updateFields={updateFields} />,
-      <ThankYouForm {...data} updateFields={updateFields} />,
+      <PhoneView key={0} {...data} updateFields={updateFields} />,
+      <CityView key={1} {...data} updateFields={updateFields} />,
+      <EmailView key={2} {...data} updateFields={updateFields} />,
+      <HomeTypeView key={3} {...data} updateFields={updateFields} />,
+      <HomeAreaView key={4} {...data} updateFields={updateFields} />,
+      <PlanView key={5} {...data} updateFields={updateFields} />,
+      <ThankYouForm key={6} {...data} updateFields={updateFields} />,
     ]);
 
   function onSubmit(e) {
@@ -64,23 +66,26 @@ export const App = () => {
     if (isFirstStep) {
       const formData = { ...data, ...hiddensObj };
       console.log({ formData });
-      fetch("https://system.pewnylokal.pl/crm/api/newEndpoint.php?format=json", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      })
+      fetch(
+        "https://system.pewnylokal.pl/crm/api/newEndpoint.php?format=json",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      )
         .then((response) => response.json())
         .then((data) => {
           setData({
             clientHash: data.hash,
             submit: 1,
-            dataEmailTemplate: "odbiorywarszawa.pl.php",
+            dataEmailTemplate: "audytowo.com.php",
           });
           console.log("Endpoint Success: ", data);
           gtag("event", "conversion", {
-            send_to: "AW-725933870/jm4tCM7Z9LMBEK6-k9oC",
+            send_to: "AW-11382353150/Fb9BCLvn2O4YEP7Zw7Mq",
           });
         })
         .catch((error) => {
@@ -88,19 +93,22 @@ export const App = () => {
         });
       next();
       setData({
-        dataEmailTemplate: "odbiorywarszawa.pl.php",
+        dataEmailTemplate: "audytowo.com.php",
         clientHash: data.clientHash,
         submit: 1,
       });
     } else if (!isLastStep) {
       console.log(data);
-      fetch("https://system.pewnylokal.pl/crm/api/updateClientData.php?format=json", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      })
+      fetch(
+        "https://system.pewnylokal.pl/crm/api/updateClientData.php?format=json",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      )
         .then((response) => {
           response.json();
         })
@@ -121,31 +129,26 @@ export const App = () => {
 
   return (
     <>
-      <nav>
-        <img src="/img/warszawa.svg" alt="logo odbiorów mieszkań warszawa" />
-      </nav>
-      <div className="container">
-        <div className="container-info">
-          <h2>Formularz kontaktowy</h2>
-          <p>
-            Wypełnij nasz formularz kontaktowy - otrzymasz fachową pomoc,
-            dopasowaną do Twoich potrzeb!
-          </p>
+      <div className="wrapper">
+        <div className="col-md uber-quiz-banner">
+          <img src="/img/wykres.jpg" draggable="false" alt="" />
         </div>
-        <form onSubmit={onSubmit}>
-          <div className="form-content">
-            <div className="form-grid">{step}</div>
-          </div>
-          {isLastStep ? (
-            <></>
-          ) : (
-            <div className="btn-container">
-              <button className="btn-main" type="submit">
-                {isFirstStep ? "Dalej" : "Wyślij"}
-              </button>
+        <div className="col-md uber-quiz-question">
+          <form onSubmit={onSubmit}>
+            <div className="form-content">
+              <div className="form-grid">{step}</div>
             </div>
-          )}{" "}
-        </form>
+            {isLastStep ? (
+              <></>
+            ) : (
+              <div className="btn-container">
+                <button className="btn-main" type="submit">
+                  {!penultimateStep ? "Dalej" : "Wyślij formularz"}
+                </button>
+              </div>
+            )}{" "}
+          </form>
+        </div>
       </div>
     </>
   );

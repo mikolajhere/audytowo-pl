@@ -3,8 +3,8 @@ import { FormWrapper } from "./FormWrapper";
 export function ThankYouForm() {
   return (
     <FormWrapper title="Dziękujemy">
-      <div className="final-item" style={{ width: "100%" }}>
-        <p style={{fontWeight: "bold"}}>Dziękujemy!</p>
+      <div className="animate-in" style={{ width: "100%" }}>
+        <h3>Dziękujemy!</h3>
         <p>
           Skontaktujemy się z Tobą jak najszybciej, aby potwierdzić szczegóły.
         </p>
