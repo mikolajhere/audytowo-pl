@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { UseMultistepForm } from "./components/UseMultistepForm";
 import { ThankYouForm } from "./components/ThankYouForm";
 import { useAddHiddenInputs } from "./scripts/Hidden";
@@ -7,7 +7,7 @@ import { CityView } from "./components/CityView";
 import { PhoneView } from "./components/PhoneView";
 import { EmailView } from "./components/EmailView";
 import { HomeTypeView } from "./components/HomeTypeView";
-import { HomeAreaView } from "./components/HomeAreaView"; 
+import { HomeAreaView } from "./components/HomeAreaView";
 import { PlanView } from "./components/PlanView";
 
 const INITIAL_DATA = {
@@ -36,12 +36,24 @@ export const App = () => {
 
   const hiddensObj = {};
 
-  setTimeout(() => {
-    const hiddens = document.querySelectorAll("input[type='hidden']");
-    hiddens.forEach((hidden) => {
-      hiddensObj[hidden.name] = hidden.value;
-    });
-  }, 1);
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const hash = urlParams.get("hash");
+    if (hash) {
+      setData((prevData) => ({
+        ...prevData,
+        clientHash: hash,
+      }));
+      next(); // Move to the next step if hash is present
+    }
+
+    setTimeout(() => {
+      const hiddens = document.querySelectorAll("input[type='hidden']");
+      hiddens.forEach((hidden) => {
+        hiddensObj[hidden.name] = hidden.value;
+      });
+    }, 1);
+  }, []);
 
   function updateFields(fields) {
     setData((prev) => {
@@ -84,9 +96,6 @@ export const App = () => {
             dataEmailTemplate: "audytowo.com.php",
           });
           console.log("Endpoint Success: ", data);
-          gtag("event", "conversion", {
-            send_to: "AW-11382353150/Fb9BCLvn2O4YEP7Zw7Mq",
-          });
         })
         .catch((error) => {
           console.error("Endpoint Error: ", error);
