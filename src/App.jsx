@@ -32,9 +32,15 @@ const INITIAL_DATA = {
 export const App = () => {
   const [data, setData] = useState(INITIAL_DATA);
 
-  useAddHiddenInputs("my-form", []);
+  // Callback function to update data state
+  const updateData = (newData) => {
+    setData((prevData) => ({
+      ...prevData,
+      ...newData,
+    }));
+  };
 
-  const hiddensObj = {};
+  useAddHiddenInputs("my-form", updateData);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -46,13 +52,6 @@ export const App = () => {
       }));
       next(); // Move to the next step if hash is present
     }
-
-    setTimeout(() => {
-      const hiddens = document.querySelectorAll("input[type='hidden']");
-      hiddens.forEach((hidden) => {
-        hiddensObj[hidden.name] = hidden.value;
-      });
-    }, 1);
   }, []);
 
   function updateFields(fields) {
@@ -76,7 +75,7 @@ export const App = () => {
     e.preventDefault();
 
     if (isFirstStep) {
-      const formData = { ...data, ...hiddensObj };
+      const formData = { ...data };
       console.log({ formData });
       fetch(
         "https://system.pewnylokal.pl/crm/api/newEndpoint.php?format=json",
@@ -107,6 +106,7 @@ export const App = () => {
         submit: 1,
       });
     } else if (!isLastStep) {
+      console.log({ step });
       console.log(data);
       fetch(
         "https://system.pewnylokal.pl/crm/api/updateClientData.php?format=json",
@@ -140,10 +140,10 @@ export const App = () => {
     <>
       <div className="wrapper">
         <div className="col-md uber-quiz-banner">
-          <img src="/img/wykres.jpg" draggable="false" alt="" />
+          <img src="wykres.jpg" draggable="false" alt="" />
         </div>
         <div className="col-md uber-quiz-question">
-          <form onSubmit={onSubmit}>
+          <form onSubmit={onSubmit} id="my-form">
             <div className="form-content">
               <div className="form-grid">{step}</div>
             </div>
