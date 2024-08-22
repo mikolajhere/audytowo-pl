@@ -24,8 +24,7 @@ export function HomeTypeView({ updateFields, serviceHomeType }) {
           >
             <option value="">Wybierz</option>
             <option value="390">Mieszkanie</option>
-            <option value="391">Dom</option>
-            <option value="393">Inne</option>
+            <option value="391">Dom</option> 
           </select>
         </div>
       </div>
