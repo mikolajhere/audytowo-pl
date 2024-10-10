@@ -95,6 +95,9 @@ export const App = () => {
             dataEmailTemplate: "audytowo.com.php",
           });
           console.log("Endpoint Success: ", data);
+          // Trigger PageSense custom event
+          window.pagesense = window.pagesense || [];
+          window.pagesense.push(['trackEvent', 'leady audytowo']);
         })
         .catch((error) => {
           console.error("Endpoint Error: ", error);
@@ -123,6 +126,9 @@ export const App = () => {
         })
         .then((data) => {
           console.log("UpdateClientData Success: ", data);
+          // Trigger PageSense custom event
+          window.pagesense = window.pagesense || [];
+          window.pagesense.push(['trackEvent', 'leady audytowo']);
         })
         .catch((error) => {
           console.error("UpdateClientData Error: ", error);
