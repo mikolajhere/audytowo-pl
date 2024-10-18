@@ -56,7 +56,7 @@ export const App = () => {
 
       next();
     }
-  }, [next]);
+  }, []);
 
   function updateFields(fields) {
     setData((prev) => {
